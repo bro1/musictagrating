@@ -1,5 +1,9 @@
 import java.io.File;
 import java.io.FileFilter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -12,6 +16,15 @@ import org.jaudiotagger.tag.TagField;
 
 public class MoveMain {
 
+	
+	private static class F {
+		String from;
+		String to;
+		int rating;
+	}
+	
+	protected static List<F> lst = new LinkedList<>();
+	
 	private static final class Filt implements FileFilter {
 		@Override
 		public boolean accept(File arg0) {
@@ -45,7 +58,102 @@ public class MoveMain {
 		
 		process(sd);
 		
+		if(verifyRatings()) {
+			return;
+		}
+		
+		
+		setupTo(args[0], args[1]);
+		
+		copy();
 
+	}
+
+	private static void copy() throws IOException {
+		for (F f : lst) {
+			if (f.to != null) {
+				System.out.println(f.from + " -> " + f.to);
+				
+				Path targetPath = new File(f.to).toPath();
+				Files.createDirectories(targetPath.getParent());
+				Files.copy(new File(f.from).toPath(),targetPath);
+			}
+		}
+		
+	}
+
+	private static void setupTo(String fromDir, String toDir) {
+		
+		File fromDirFile = new File(fromDir);
+		File toDirFile = new File(toDir);
+		
+		for (F f : lst) {
+			if (f.rating >= 3) {
+				System.out.print(f.from + " " + f.rating);
+				File fff = new File(f.from);
+				String prefix;
+				if (allAbove(f)) {
+					prefix = "full";
+				} else {
+					prefix = "cleaned";
+				}
+
+				String prn;
+				if (fff.getParent().startsWith(fromDirFile.getPath())) {
+					prn = fff.getParent().substring(fromDirFile.getPath().length()+1);
+				} else {
+					throw new IllegalArgumentException("Must match");
+				}
+				
+				
+				f.to = toDirFile.getPath() + File.separator + prn + " (" + prefix + ")" + File.separator + fff.getName();
+
+
+			}
+		}
+
+	}
+
+	private static boolean allAbove(F f) {
+		
+		boolean all = true;
+		File fl = new File(f.from);
+		String zz = fl.getParent();
+		
+		for (F ff : lst) {
+			if (ff.from.startsWith(zz)) {
+				if(new File(ff.from).getParent().equals(zz) && ff.rating < 3) {
+					return false;
+				}
+			}
+		}		
+		
+		return true;
+	}
+
+	private static boolean verifyRatings() {
+		
+		boolean noRating = false;
+		
+		for (F f : lst) {
+			if (f.rating == -1) {			
+				noRating = true;
+			}
+		}
+		
+		if (noRating){
+			System.out.println("Ratings for the following files could not be determined");
+		
+			for (F f : lst) {
+				if (f.rating == -1) {			
+					System.out.println(f.from);
+				}
+			}
+
+		}
+
+		return noRating;
+		
 	}
 
 	public static void process(File sd) throws Exception {
@@ -62,33 +170,27 @@ public class MoveMain {
 	private static void translateRating1(File testFile)
 			throws Exception {
 						
+		F ff = new F();
+		ff.from = testFile.getPath();
+		ff.rating = -1;
+		
 		AudioFile f = AudioFileIO.read(testFile);
 		
-		String fo = f.getAudioHeader().getFormat();
+		String fileFormat = f.getAudioHeader().getFormat();
 		
 		Tag tag = f.getTag();
 		
-
 		List<TagField> z = tag.getFields(FieldKey.RATING);		
-		
-		if (z.size() == 0) {
-			System.out.println(testFile);
-			System.out.println("UNKNOWN");
+			
+		for (TagField t : z) {
+			byte[] rc = t.getRawContent();
+			ff.rating = getStarRatingFromByteArray(rc, fileFormat);
 		}
-		else {
-			for (TagField t : z) {
-				byte[] rc = t.getRawContent();
-				int i = getStarRatingFromByteArray(rc, fo);
-				if (i == -1) {
-					System.out.println(testFile);
-					System.out.println(i);
-				}
-			}
+	
 		
-		}
+		lst.add(ff);
 		
 		
-//		AudioFileIO.write(f);
 	}
 
 	private static int getStarRatingFromByteArray(byte[] rc, String fo) {
