@@ -7,7 +7,7 @@
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 	
-    <name>bro1-pdf-tool</name>
+    <name>music-tag-rating</name>
     <url>http://maven.apache.org</url>
 	
     <properties>
