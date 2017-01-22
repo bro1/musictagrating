@@ -167,30 +167,33 @@ public class MoveMain {
 		}
 	}
 
-	private static void translateRating1(File testFile)
+	private static void translateRating1(File musicFile)
 			throws Exception {
-						
+			            
 		F ff = new F();
-		ff.from = testFile.getPath();
+		ff.from = musicFile.getPath();
 		ff.rating = -1;
 		
-		AudioFile f = AudioFileIO.read(testFile);
+		AudioFile f = AudioFileIO.read(musicFile);
 		
 		String fileFormat = f.getAudioHeader().getFormat();
 		
 		Tag tag = f.getTag();
 		
-		List<TagField> z = tag.getFields(FieldKey.RATING);		
-			
-		for (TagField t : z) {
-			byte[] rc = t.getRawContent();
-			ff.rating = getStarRatingFromByteArray(rc, fileFormat);
-		}
+		List<TagField> ratingFieldsList = tag.getFields(FieldKey.RATING);		
+			                
+                // Sometimes this will contain more than one music rating tag (e.g. WMP RATING and POPULARIMETER)
+                // We will treat the file as rated only when there is exactly one rating tag.
+                if (ratingFieldsList.size() == 1) {
+                    for (TagField t : ratingFieldsList) {
+                        byte[] rc = t.getRawContent();                              
+                        ff.rating = getStarRatingFromByteArray(rc, fileFormat);
+                    }
+                } else {
+                    ff.rating = -1;
+                }
 	
-		
 		lst.add(ff);
-		
-		
 	}
 
 	private static int getStarRatingFromByteArray(byte[] rc, String fo) {
@@ -209,7 +212,7 @@ public class MoveMain {
 		
 			// Based on http://en.wikipedia.org/wiki/ID3#ID3v2_Rating_tag_issue
 
-			     if (i >=  1 && i <= 31)  rating= 1;
+			     if (i >=  1 && i <= 31)  rating = 1;
 			else if (i >= 32 && i <= 95) rating = 2;
 			else if (i >= 96 && i <= 159) rating = 3;
 			else if (i >= 160 && i <= 223) rating = 4;
