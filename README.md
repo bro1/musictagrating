@@ -16,6 +16,15 @@ If any of the files do not have a star rating allocated then the list of files w
 Usage example:
 > java MoveMain c:\source_dir c:\target_dir
 
+CopyGoodMusic
+-------------
+
+Work in progress: 
+* scan the source directory
+* identify all files rated 3 stars or more
+* copy specified number of files in random order into the target directory      
+
+
 Troubleshooting
 ---------------
 

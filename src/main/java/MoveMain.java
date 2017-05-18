@@ -1,6 +1,7 @@
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.LinkedList;
@@ -17,13 +18,13 @@ import org.jaudiotagger.tag.TagField;
 public class MoveMain {
 
 	
-	private static class F {
+	public static class F {
 		String from;
 		String to;
 		int rating;
 	}
 	
-	protected static List<F> lst = new LinkedList<>();
+	static List<F> lst = new LinkedList<>();
 	
 	private static final class Filt implements FileFilter {
 		@Override
@@ -37,9 +38,6 @@ public class MoveMain {
 	
 	
 
-	/**
-	 * @param args
-	 */
 	public static void main(String[] args) throws Exception {
 
 		Logger.getLogger("org.jaudiotagger").setLevel(Level.OFF);
@@ -58,7 +56,7 @@ public class MoveMain {
 		
 		process(sd);
 		
-		if(verifyRatings()) {
+		if(verifyRatings(System.out)) {
 			return;
 		}
 		
@@ -131,30 +129,32 @@ public class MoveMain {
 		return true;
 	}
 
-	private static boolean verifyRatings() {
+	public static boolean verifyRatings(PrintStream ps) {
 		
 		boolean noRating = false;
 		
 		for (F f : lst) {
-			if (f.rating == -1) {			
+			if (f.rating == -1) {	
 				noRating = true;
 			}
 		}
 		
 		if (noRating){
-			System.out.println("Ratings for the following files could not be determined");
+			ps.println("Ratings for the following files could not be determined");
 		
 			for (F f : lst) {
 				if (f.rating == -1) {			
-					System.out.println(f.from);
+					ps.println(f.from);
 				}
 			}
 
 		}
 
-		return noRating;
-		
+		return noRating;		
 	}
+	
+	
+	
 
 	public static void process(File sd) throws Exception {
 		File[] ff = sd.listFiles(new Filt());		
@@ -229,11 +229,14 @@ public class MoveMain {
 				default: rating = -1;
 			}
 		}
-				
-		if (rating == -1) {
-			System.out.println(fo);
-			System.out.println("bytevalue = " + i);
-		}
+		
+		// A bit of debug information
+//		if (rating == -1) {
+//			System.out.println(fo);
+//			System.out.println("bytevalue = " + i);
+//		}
+		
+		
 		return rating;
 	}
 
