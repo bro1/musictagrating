@@ -167,31 +167,42 @@ public class MoveMain {
 		}
 	}
 
-	private static void translateRating1(File musicFile)
-			throws Exception {
+	private static void translateRating1(File musicFile) throws Exception {
 			            
 		F ff = new F();
 		ff.from = musicFile.getPath();
 		ff.rating = -1;
+
+		AudioFile f = null;
 		
-		AudioFile f = AudioFileIO.read(musicFile);
+		// if the file cannot be processed  
+		try {
+			f = AudioFileIO.read(musicFile);
+		} catch (Throwable t) {
+			System.out.println("File cannot be processed: " + ff.from);
+			t.printStackTrace();
+			lst.add(ff);
+			return;
+		}
 		
 		String fileFormat = f.getAudioHeader().getFormat();
 		
 		Tag tag = f.getTag();
-		
-		List<TagField> ratingFieldsList = tag.getFields(FieldKey.RATING);		
-			                
-                // Sometimes this will contain more than one music rating tag (e.g. WMP RATING and POPULARIMETER)
-                // We will treat the file as rated only when there is exactly one rating tag.
-                if (ratingFieldsList.size() == 1) {
-                    for (TagField t : ratingFieldsList) {
-                        byte[] rc = t.getRawContent();                              
-                        ff.rating = getStarRatingFromByteArray(rc, fileFormat);
-                    }
-                } else {
-                    ff.rating = -1;
-                }
+
+		if (tag != null) {
+			List<TagField> ratingFieldsList = tag.getFields(FieldKey.RATING);		
+				                
+		    // Sometimes this will contain more than one music rating tag (e.g. WMP RATING and POPULARIMETER)
+		    // We will treat the file as rated only when there is exactly one rating tag.
+		    if (ratingFieldsList.size() == 1) {
+		        for (TagField t : ratingFieldsList) {
+		            byte[] rc = t.getRawContent();                              
+		            ff.rating = getStarRatingFromByteArray(rc, fileFormat);
+		        }
+		    } else {
+		        ff.rating = -1;
+		    }
+		}
 	
 		lst.add(ff);
 	}
