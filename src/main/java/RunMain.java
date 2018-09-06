@@ -67,7 +67,7 @@ public class RunMain {
 		AudioFileIO.write(f);
 	}
 
-	private static int translateRating(int rt) {
+	public static int translateRating(int rt) {
 		
 		int rating; 
 		
@@ -82,7 +82,7 @@ public class RunMain {
 		}
 		
 
-		return 60;
+		return rating;
 	}
 
 	private static int getStarRating(Tag tag) {

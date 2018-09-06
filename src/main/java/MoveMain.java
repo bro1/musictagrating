@@ -140,7 +140,7 @@ public class MoveMain {
 		}
 		
 		if (noRating){
-			ps.println("Ratings for the following files could not be determined");
+			ps.println("# Ratings for the following files could not be determined");
 		
 			for (F f : lst) {
 				if (f.rating == -1) {			

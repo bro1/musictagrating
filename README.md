@@ -19,10 +19,23 @@ Usage example:
 CopyGoodMusic
 -------------
 
-Work in progress: 
 * scan the source directory
 * identify all files rated 3 stars or more
 * copy specified number of files in random order into the target directory      
+
+UpdateFromDB
+------------
+
+Look at the blob3.blob (as produced by Android Rocket Player) 
+sqlite3 DB and write the rating information from DB to the relevant file.
+
+The workflow is like this:
+ 1. Copy files to Android phone
+ 1. Rate them
+ 1. Copy the DB to Linux machine
+ 1. UpdateFromDB to transfer ratings to the file
+
+Limitation: at the moment deals with ID3V23 tags only.
 
 
 Troubleshooting
