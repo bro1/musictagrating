@@ -155,7 +155,12 @@ public class MoveMain {
 	
 	
 	
-
+	/** 
+	 * One of the main methods to recursively load files info and the star rating
+	 * 
+	 * @param sd
+	 * @throws Exception
+	 */
 	public static void process(File sd) throws Exception {
 		File[] ff = sd.listFiles(new Filt());		
 		for (File f : ff) {

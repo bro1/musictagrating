@@ -27,9 +27,9 @@ public class UpdateFromDB {
 	// TODO: make the "music-to-sort" folder name parametrizable
 	// TODO: make the location parametrizable
 	// TODO: check if I need to support other ID3 tag versions
-	private static String dir = "/mnt/d-drive/syncthing-data/audio-video";
+	private static String dir = "/home/bro1/syncthing-data/audio-video";
 	//private static String musicfilesdir = "/mnt/d-drive/syncthing-data/Meizu Media/rate";
-	private static String musicfilesdir = "/mnt/d-drive/syncthing-data/Main Phone Media/rate";
+	private static String musicfilesdir = "/home/bro1/syncthing-data/main-phone-media/rate";
 	
 	
 	public static void main(String[] args) throws Exception {
@@ -40,7 +40,7 @@ public class UpdateFromDB {
 
 	    Connection connection = null;
 	      // create a database connection
-	      connection = DriverManager.getConnection("jdbc:sqlite:/mnt/d-drive/syncthing-data/audio-video/music-to-sort/blob3.blob");
+	      connection = DriverManager.getConnection("jdbc:sqlite:/home/bro1/syncthing-data/audio-video/music-to-sort/blob3.blob");
 	      Statement statement = connection.createStatement();
 		ResultSet rs = statement.executeQuery("select * from songs");
 		while (rs.next()) {
