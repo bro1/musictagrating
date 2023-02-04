@@ -65,7 +65,7 @@ public class CopyGoodMusic {
 	
 			numberOfFilesToCopy = Integer.parseInt(args[4]); 
 		}
-		MoveMain.process(sd);		
+		MoveMain.loadFilesAndRatingsRecursively(sd);		
 				
 		MoveMain.verifyRatings(new PrintStream(unratedFilesPlaylist));
 		printPositiveRatings(new PrintStream(goodFilesPlaylist));

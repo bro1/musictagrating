@@ -54,7 +54,7 @@ public class MoveMain {
 			return;
 		}
 		
-		process(sd);
+		loadFilesAndRatingsRecursively(sd);
 		
 		if(verifyRatings(System.out)) {
 			return;
@@ -161,11 +161,11 @@ public class MoveMain {
 	 * @param sd
 	 * @throws Exception
 	 */
-	public static void process(File sd) throws Exception {
+	public static void loadFilesAndRatingsRecursively(File sd) throws Exception {
 		File[] ff = sd.listFiles(new Filt());		
 		for (File f : ff) {
 			if (f.isDirectory()) {
-				process(f);
+				loadFilesAndRatingsRecursively(f);
 			} else {
 				translateRating1(f);
 			}

@@ -36,7 +36,7 @@ public class GenReports {
 		File goodFilesPlaylist = new File(args[2]);
 		File badFilesPlaylist = new File(args[3]);
 				
-		MoveMain.process(sd);		
+		MoveMain.loadFilesAndRatingsRecursively(sd);		
 				
 		MoveMain.verifyRatings(new PrintStream(unratedFilesPlaylist));
 		printPositiveRatings(new PrintStream(goodFilesPlaylist));
