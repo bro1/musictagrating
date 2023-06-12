@@ -23,6 +23,10 @@ CopyGoodMusic
 * identify all files rated 3 stars or more
 * copy specified number of files in random order into the target directory      
 
+
+e.g. with these parameters
+/media/nas-music-smb/music unrated.m3u good.m3u /home/bro1/syncthing-data/main-phone-media/good 400
+
 UpdateFromDB
 ------------
 
