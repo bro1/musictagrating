@@ -65,7 +65,7 @@ public class AddGoodMusicToMPD {
 		for(MoveMain.F f : positiveList) {
 
 			File fromFile = new File(f.from);
-			String tofile = fromFile.getAbsolutePath().replace("/media/nas-music-smb/", "NAS/musicnas/");
+			String tofile = fromFile.getAbsolutePath().replace("/media/nas-music-smb/", "NAS/music/");
 			try {
 				play.addSong(tofile, true);
 			} catch (Throwable t) {

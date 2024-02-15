@@ -172,7 +172,7 @@ public class MoveMain {
 		}
 	}
 
-	private static void translateRating1(File musicFile) throws Exception {
+	public static void translateRating1(File musicFile) throws Exception {
 			            
 		F ff = new F();
 		ff.from = musicFile.getPath();
@@ -201,7 +201,8 @@ public class MoveMain {
 		    // We will treat the file as rated only when there is exactly one rating tag.
 		    if (ratingFieldsList.size() == 1) {
 		        for (TagField t : ratingFieldsList) {
-		            byte[] rc = t.getRawContent();                              
+		            byte[] rc = t.getRawContent();       
+		            
 		            ff.rating = getStarRatingFromByteArray(rc, fileFormat);
 		        }
 		    } else {
@@ -220,8 +221,32 @@ public class MoveMain {
 		String kmp32 = "MPEG-1 Layer 2";
 		String kmp33 = "MPEG-2 Layer 3";
 		String ogg = "Ogg Vorbis v1";
-
-		byte b = rc[rc.length - 1];
+	
+		
+		// Based on https://mutagen-specs.readthedocs.io/en/latest/id3/id3v2.3.0.html
+		//
+		// POPM tag consists of 
+		// 1. The email which is null terminated, 
+		// 2. after that it's 1 byte of rating and
+		// 3. any number of bytes representing count (this part is optional, 
+		//    so it may not be there). So for up to ~255 plays it will be one byte, 
+		//    after that it takes 2 bytes, and after exceeding 2 bytes, can go to 3, etc.  
+		//
+		// This means that need to get the first byte after last null terminator. 
+		
+		byte b = 0;
+		byte t;
+		
+		// Find the byte that is following the last null terminator 
+		for (int j = 0; j<rc.length;j++) {
+			b = rc[rc.length - 1 - j];
+			t = rc[rc.length - 2 - j];
+			
+			if (t == 0) break;
+		}
+		
+				
+//		byte b = rc[rc.length - 1];
 		int i = b & 0xFF;
 		
 		if (kmp3.equals(fo) || kmp32.equals(fo) || kmp33.equals(fo)) {
