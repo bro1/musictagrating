@@ -73,18 +73,6 @@ public class AddGoodMusicToMPD {
 				t.printStackTrace();
 			}
 			
-//			String to = targetDir.getAbsolutePath() + File.separator + fromFile.getName();
-//			File toFile = new File(to);
-
-//			if (!toFile.exists()) {
-//				try {
-//					Files.copy(new File(f.from), toFile);
-//				} catch (Exception e) {
-//					e.printStackTrace();
-//				}
-//			} else {
-//				System.err.println("File with this name already exists - skipping the file: " + toFile);
-//			}
 		}
 		
 		play.savePlaylist("linas-good");
