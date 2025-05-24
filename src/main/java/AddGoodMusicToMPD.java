@@ -56,12 +56,11 @@ public class AddGoodMusicToMPD {
 		Playlist play = z.getPlaylist();
 
 		List<MoveMain.F> positiveList = MoveMain.lst.stream()
-			.filter(f -> f.rating >= 3)
+			.filter(f -> {return f.rating >= 3 && !f.isExplicit();})
 			.collect(Collectors.collectingAndThen(
 				Collectors.toList(),
 				 collected -> {Collections.shuffle(collected); return collected;}));
 
-//		int numFiles = positiveList.size() < numberOfFilesToCopy ? positiveList.size() : numberOfFilesToCopy;
 		for(MoveMain.F f : positiveList) {
 
 			File fromFile = new File(f.from);
@@ -75,6 +74,7 @@ public class AddGoodMusicToMPD {
 			
 		}
 		
+		play.deletePlaylist("linas-good");
 		play.savePlaylist("linas-good");
 
 	}

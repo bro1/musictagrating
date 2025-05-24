@@ -22,6 +22,12 @@ public class MoveMain {
 		String from;
 		String to;
 		int rating;
+		String comment;
+		
+		public boolean isExplicit() {
+			return comment != null && comment.toLowerCase().contains("explicit");
+		}
+		
 	}
 	
 	static List<F> lst = new LinkedList<>();
@@ -194,7 +200,8 @@ public class MoveMain {
 		
 		Tag tag = f.getTag();
 
-		if (tag != null) {
+		if (tag != null) {					
+			
 			List<TagField> ratingFieldsList = tag.getFields(FieldKey.RATING);		
 				                
 		    // Sometimes this will contain more than one music rating tag (e.g. WMP RATING and POPULARIMETER)
@@ -208,9 +215,17 @@ public class MoveMain {
 		    } else {
 		        ff.rating = -1;
 		    }
+		    
+		    // get comment too - this is so that I could exclude explicit songs
+		    ff.comment = tag.getFirst(FieldKey.COMMENT);
+		    
 		}
 	
 		lst.add(ff);
+		if (lst.size() % 100 == 0) {
+			System.out.println("Processed " + lst.size() + " files");
+		}
+		
 	}
 
 	private static int getStarRatingFromByteArray(byte[] rc, String fo) {
